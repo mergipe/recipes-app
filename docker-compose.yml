@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: bolinho
+      MYSQL_USER: springuser
+      MYSQL_PASSWORD: bolinho
+      MYSQL_DATABASE: db_app
+    ports:
+      - "3306:3306"
+    container_name: recipes-app-db
+  app:
+    build: ./
+    image:
+      mergipe/recipes-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    container_name: recipes-app
