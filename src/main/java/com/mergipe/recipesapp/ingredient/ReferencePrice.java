@@ -12,6 +12,10 @@ public class ReferencePrice {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Ingredient ingredient;
+
     private String brand;
     private String description;
 
@@ -37,6 +41,14 @@ public class ReferencePrice {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
     }
 
     public String getBrand() {

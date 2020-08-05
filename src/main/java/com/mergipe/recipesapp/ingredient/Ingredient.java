@@ -13,9 +13,8 @@ public class Ingredient {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany
-    @JoinColumn(name = "ingredient_id", nullable = false)
-    private List<ReferencePrice> referencePriceList;
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL)
+    private List<ReferencePrice> referencePrices;
 
     @Embedded
     private NutritionFacts nutritionFacts;
@@ -36,12 +35,12 @@ public class Ingredient {
         this.name = name;
     }
 
-    public List<ReferencePrice> getReferencePriceList() {
-        return referencePriceList;
+    public List<ReferencePrice> getReferencePrices() {
+        return referencePrices;
     }
 
-    public void setReferencePriceList(List<ReferencePrice> referencePriceList) {
-        this.referencePriceList = referencePriceList;
+    public void setReferencePrices(List<ReferencePrice> referencePrices) {
+        this.referencePrices = referencePrices;
     }
 
     public NutritionFacts getNutritionFacts() {
