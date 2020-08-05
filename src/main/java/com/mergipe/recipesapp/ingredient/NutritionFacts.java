@@ -31,7 +31,6 @@ public class NutritionFacts {
                     column = @Column(name = "secondary_serving_size_unit")
             )
     })
-    @Enumerated(EnumType.STRING)
     private ScalarQuantity secondaryServingSize;
 
     @Column(nullable = false, columnDefinition = "double default 0")

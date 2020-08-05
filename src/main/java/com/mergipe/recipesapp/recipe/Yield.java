@@ -20,6 +20,5 @@ public class Yield {
                     column = @Column(name = "portion_size_unit")
             )
     })
-    @Enumerated(EnumType.STRING)
     private ScalarQuantity portionSize;
 }

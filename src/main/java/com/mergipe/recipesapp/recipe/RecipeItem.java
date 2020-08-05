@@ -27,6 +27,5 @@ public class RecipeItem {
                     column = @Column(name = "quantity_unit", nullable = false)
             )
     })
-    @Enumerated(EnumType.STRING)
     private ScalarQuantity quantity;
 }
