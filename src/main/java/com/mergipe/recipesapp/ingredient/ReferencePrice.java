@@ -1,5 +1,7 @@
 package com.mergipe.recipesapp.ingredient;
 
+import com.mergipe.recipesapp.measure.ScalarQuantity;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -13,8 +15,18 @@ public class ReferencePrice {
     private String brand;
     private String description;
 
-    @Column(nullable = false)
-    private double amount;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(
+                    name = "magnitude",
+                    column = @Column(name = "amount", nullable = false)
+            ),
+            @AttributeOverride(
+                    name = "measurementUnit",
+                    column = @Column(name = "amount_unit", nullable = false)
+            )
+    })
+    private ScalarQuantity amount;
 
     @Column(nullable = false)
     private BigDecimal price;
@@ -43,11 +55,11 @@ public class ReferencePrice {
         this.description = description;
     }
 
-    public double getAmount() {
+    public ScalarQuantity getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(ScalarQuantity amount) {
         this.amount = amount;
     }
 
