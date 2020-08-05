@@ -17,6 +17,10 @@ public class MeasurementUnitConverter implements AttributeConverter<MeasurementU
 
     @Override
     public MeasurementUnit convertToEntityAttribute(String s) {
+        if (s == null) {
+            return null;
+        }
+
         return MeasurementUnit.valueOf(s);
     }
 }
