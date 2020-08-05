@@ -34,8 +34,27 @@ public class NutritionFacts {
     @Enumerated(EnumType.STRING)
     private ScalarQuantity secondaryServingSize;
 
-    private double calorie;
-    private double carbohydrate;
+    @Column(nullable = false, columnDefinition = "double default 0")
+    private double calories;
+
+    @Column(nullable = false, columnDefinition = "double default 0")
+    private double totalCarbohydrate;
+
+    @Column(nullable = false, columnDefinition = "double default 0")
     private double protein;
-    private double fat;
+
+    @Column(nullable = false, columnDefinition = "double default 0")
+    private double totalFat;
+
+    @Column(nullable = false, columnDefinition = "double default 0")
+    private double saturatedFat;
+
+    @Column(nullable = false, columnDefinition = "double default 0")
+    private double transFat;
+
+    @Column(nullable = false, columnDefinition = "double default 0")
+    private double dietaryFiber;
+
+    @Column(nullable = false, columnDefinition = "double default 0")
+    private double sodium;
 }

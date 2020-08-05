@@ -14,15 +14,9 @@ public class Ingredient {
     private String name;
 
     @OneToMany
-    @JoinColumn(name = "ingredient_id")
+    @JoinColumn(name = "ingredient_id", nullable = false)
     private List<ReferencePrice> referencePriceList;
 
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "calorie", column = @Column(nullable = true)),
-            @AttributeOverride(name = "carbohydrate", column = @Column(nullable = true)),
-            @AttributeOverride(name = "protein", column = @Column(nullable = true)),
-            @AttributeOverride(name = "fat", column = @Column(nullable = true))
-    })
     private NutritionFacts nutritionFacts;
 }
