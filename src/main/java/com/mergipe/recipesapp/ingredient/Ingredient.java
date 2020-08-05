@@ -19,4 +19,36 @@ public class Ingredient {
 
     @Embedded
     private NutritionFacts nutritionFacts;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<ReferencePrice> getReferencePriceList() {
+        return referencePriceList;
+    }
+
+    public void setReferencePriceList(List<ReferencePrice> referencePriceList) {
+        this.referencePriceList = referencePriceList;
+    }
+
+    public NutritionFacts getNutritionFacts() {
+        return nutritionFacts;
+    }
+
+    public void setNutritionFacts(NutritionFacts nutritionFacts) {
+        this.nutritionFacts = nutritionFacts;
+    }
 }

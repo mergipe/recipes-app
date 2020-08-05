@@ -57,4 +57,84 @@ public class NutritionFacts {
 
     @Column(nullable = false, columnDefinition = "double default 0")
     private double sodium;
+
+    public ScalarQuantity getPrimaryServingSize() {
+        return primaryServingSize;
+    }
+
+    public void setPrimaryServingSize(ScalarQuantity primaryServingSize) {
+        this.primaryServingSize = primaryServingSize;
+    }
+
+    public ScalarQuantity getSecondaryServingSize() {
+        return secondaryServingSize;
+    }
+
+    public void setSecondaryServingSize(ScalarQuantity secondaryServingSize) {
+        this.secondaryServingSize = secondaryServingSize;
+    }
+
+    public double getCalories() {
+        return calories;
+    }
+
+    public void setCalories(double calories) {
+        this.calories = calories;
+    }
+
+    public double getTotalCarbohydrate() {
+        return totalCarbohydrate;
+    }
+
+    public void setTotalCarbohydrate(double totalCarbohydrate) {
+        this.totalCarbohydrate = totalCarbohydrate;
+    }
+
+    public double getProtein() {
+        return protein;
+    }
+
+    public void setProtein(double protein) {
+        this.protein = protein;
+    }
+
+    public double getTotalFat() {
+        return totalFat;
+    }
+
+    public void setTotalFat(double totalFat) {
+        this.totalFat = totalFat;
+    }
+
+    public double getSaturatedFat() {
+        return saturatedFat;
+    }
+
+    public void setSaturatedFat(double saturatedFat) {
+        this.saturatedFat = saturatedFat;
+    }
+
+    public double getTransFat() {
+        return transFat;
+    }
+
+    public void setTransFat(double transFat) {
+        this.transFat = transFat;
+    }
+
+    public double getDietaryFiber() {
+        return dietaryFiber;
+    }
+
+    public void setDietaryFiber(double dietaryFiber) {
+        this.dietaryFiber = dietaryFiber;
+    }
+
+    public double getSodium() {
+        return sodium;
+    }
+
+    public void setSodium(double sodium) {
+        this.sodium = sodium;
+    }
 }
