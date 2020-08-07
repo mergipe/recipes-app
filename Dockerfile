@@ -20,4 +20,6 @@ ARG DEPENDENCY=/workspace/app/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java", "-cp", "app:app/lib/*", "com.mergipe.recipesapp.RecipesApplication"]
+ENTRYPOINT ["java", "-cp", "app:app/lib/*", \
+    "com.mergipe.recipesapp.RecipesApplication", \
+    "--spring.datasource.url=jdbc:mysql://db:3306/db_app"]
