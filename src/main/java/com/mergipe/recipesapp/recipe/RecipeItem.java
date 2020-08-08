@@ -12,6 +12,10 @@ public class RecipeItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Recipe recipe;
+
     @OneToOne
     @JoinColumn(nullable = false)
     private Ingredient ingredient;
@@ -28,4 +32,45 @@ public class RecipeItem {
             )
     })
     private ScalarQuantity quantity;
+
+    public RecipeItem() {
+    }
+
+    public RecipeItem(Recipe recipe, Ingredient ingredient, ScalarQuantity quantity) {
+        this.recipe = recipe;
+        this.ingredient = ingredient;
+        this.quantity = quantity;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
+    }
+
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
+    }
+
+    public ScalarQuantity getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(ScalarQuantity quantity) {
+        this.quantity = quantity;
+    }
 }
