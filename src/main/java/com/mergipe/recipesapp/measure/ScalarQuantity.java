@@ -11,6 +11,14 @@ public class ScalarQuantity {
     @Column(nullable = false)
     private MeasurementUnit measurementUnit;
 
+    public ScalarQuantity() {
+    }
+
+    public ScalarQuantity(double magnitude, MeasurementUnit measurementUnit) {
+        this.magnitude = magnitude;
+        this.measurementUnit = measurementUnit;
+    }
+
     public double getMagnitude() {
         return magnitude;
     }

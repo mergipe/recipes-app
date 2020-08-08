@@ -35,6 +35,19 @@ public class ReferencePrice {
     @Column(nullable = false)
     private BigDecimal price;
 
+    public ReferencePrice() {
+    }
+
+    public ReferencePrice(Ingredient ingredient, String brand,
+                          String description, ScalarQuantity amount,
+                          BigDecimal price) {
+        this.ingredient = ingredient;
+        this.brand = brand;
+        this.description = description;
+        this.amount = amount;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }
