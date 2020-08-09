@@ -63,4 +63,14 @@ public class Ingredient {
     public void setNutritionFacts(NutritionFacts nutritionFacts) {
         this.nutritionFacts = nutritionFacts;
     }
+
+    public void addReferencePrice(ReferencePrice referencePrice) {
+        this.referencePrices.add(referencePrice);
+        referencePrice.setIngredient(this);
+    }
+
+    public void removeReferencePrice(ReferencePrice referencePrice) {
+        this.referencePrices.remove(referencePrice);
+        referencePrice.setIngredient(null);
+    }
 }
