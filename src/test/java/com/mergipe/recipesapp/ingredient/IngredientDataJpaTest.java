@@ -17,13 +17,12 @@ class IngredientDataJpaTest {
     @Autowired
     private IngredientRepository repository;
 
-    private Ingredient ingredientTemplate;
-    private Ingredient ingredientFromRepository;
+    private Ingredient testIngredient;
 
     @BeforeEach
-    void saveExampleIngredient() {
-        this.ingredientTemplate = ExampleIngredient.withoutReferencePrices();
-        this.ingredientFromRepository = this.repository.saveAndFlush(this.ingredientTemplate);
+    void setUpTestEnvironment() {
+        this.testIngredient = IngredientDataJpaTestSetup
+                .saveExampleIngredientWithoutReferencePrices(this.repository);
     }
 
     @Test
@@ -35,16 +34,18 @@ class IngredientDataJpaTest {
 
     @Test
     void testCreateBasicIngredient() {
+        Ingredient referenceIngredient = TestIngredientFactory.withoutReferencePrices();
+
         assertThat(this.repository.count()).isEqualTo(1);
-        assertThat(this.ingredientFromRepository.getName())
-                .isEqualTo(this.ingredientTemplate.getName());
-        assertThat(this.ingredientFromRepository.getNutritionFacts())
-                .isEqualToComparingFieldByField(this.ingredientTemplate.getNutritionFacts());
+        assertThat(this.testIngredient.getName())
+                .isEqualTo(referenceIngredient.getName());
+        assertThat(this.testIngredient.getNutritionFacts())
+                .isEqualToComparingFieldByField(referenceIngredient.getNutritionFacts());
     }
 
     @Test
     void testUpdateNutritionFactsAttributes() {
-        NutritionFacts nutritionFacts = this.ingredientFromRepository.getNutritionFacts();
+        NutritionFacts nutritionFacts = this.testIngredient.getNutritionFacts();
         nutritionFacts.setCalories(1);
         nutritionFacts.setTotalCarbohydrate(2);
         nutritionFacts.setProtein(3);
@@ -59,8 +60,8 @@ class IngredientDataJpaTest {
         nutritionFacts.setSecondaryServingSize(new ScalarQuantity(
                 2, MeasurementUnit.CUP
         ));
-        this.ingredientFromRepository = this.repository.saveAndFlush(this.ingredientFromRepository);
-        nutritionFacts = this.ingredientFromRepository.getNutritionFacts();
+        this.testIngredient = this.repository.saveAndFlush(this.testIngredient);
+        nutritionFacts = this.testIngredient.getNutritionFacts();
 
         assertThat(nutritionFacts.getCalories()).isEqualTo(1);
         assertThat(nutritionFacts.getTotalCarbohydrate()).isEqualTo(2);
@@ -82,10 +83,10 @@ class IngredientDataJpaTest {
 
     @Test
     void checkThatSettingNutritionFactsToNullThrowsException() {
-        this.ingredientFromRepository.setNutritionFacts(null);
+        this.testIngredient.setNutritionFacts(null);
 
         assertThatThrownBy(() -> {
-            this.repository.saveAndFlush(this.ingredientFromRepository);
+            this.repository.saveAndFlush(this.testIngredient);
         }).isInstanceOf(DataIntegrityViolationException.class);
     }
 }

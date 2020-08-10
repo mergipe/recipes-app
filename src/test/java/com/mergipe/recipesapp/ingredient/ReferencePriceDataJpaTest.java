@@ -18,21 +18,19 @@ class ReferencePriceDataJpaTest {
     @Autowired
     private ReferencePriceRepository referencePriceRepository;
 
-    private Ingredient ingredientTemplate;
-    private Ingredient ingredientFromRepository;
+    private Ingredient testIngredient;
 
     @BeforeEach
-    void saveExampleIngredient() {
-        this.ingredientTemplate = ExampleIngredient.withOneExampleReferencePrice();
-        this.ingredientFromRepository = this.ingredientRepository
-                .saveAndFlush(this.ingredientTemplate);
+    void setUpTestEnvironment() {
+        this.testIngredient = IngredientDataJpaTestSetup
+                .saveExampleIngredientWithOneReferencePrice(this.ingredientRepository);
     }
 
     @Test
     void testAddReferencePriceToIngredient() {
         assertThat(this.referencePriceRepository.count()).isEqualTo(1);
 
-        ReferencePrice referencePriceFromIngredient = this.ingredientFromRepository
+        ReferencePrice referencePriceFromIngredient = this.testIngredient
                 .getReferencePrices()
                 .get(0);
         ReferencePrice referencePriceFromRepository = this.referencePriceRepository
@@ -41,7 +39,7 @@ class ReferencePriceDataJpaTest {
 
         assertThat(referencePriceFromIngredient.getIngredient())
                 .isEqualToComparingFieldByField(referencePriceFromRepository.getIngredient())
-                .isEqualToComparingFieldByField(this.ingredientFromRepository);
+                .isEqualToComparingFieldByField(this.testIngredient);
         assertThat(referencePriceFromIngredient.getBrand())
                 .isEqualTo(referencePriceFromRepository.getBrand());
         assertThat(referencePriceFromIngredient.getDescription())
@@ -54,19 +52,19 @@ class ReferencePriceDataJpaTest {
 
     @Test
     void testRemoveReferencePriceFromIngredient() {
-        ReferencePrice referencePrice = this.ingredientFromRepository.getReferencePrices().get(0);
-        this.ingredientFromRepository.removeReferencePrice(referencePrice);
-        this.ingredientFromRepository = this.ingredientRepository
-                .saveAndFlush(this.ingredientFromRepository);
+        ReferencePrice referencePrice = this.testIngredient.getReferencePrices().get(0);
+        this.testIngredient.removeReferencePrice(referencePrice);
+        this.testIngredient = this.ingredientRepository
+                .saveAndFlush(this.testIngredient);
 
-        assertThat(this.ingredientFromRepository.getReferencePrices().size())
+        assertThat(this.testIngredient.getReferencePrices().size())
                 .isEqualTo(0)
                 .isEqualTo(this.referencePriceRepository.count());
     }
 
     @Test
     void checkThatRemovingIngredientFromReferencePriceThrowsException() {
-        ReferencePrice referencePrice = this.ingredientFromRepository.getReferencePrices().get(0);
+        ReferencePrice referencePrice = this.testIngredient.getReferencePrices().get(0);
         referencePrice.setIngredient(null);
 
         assertThatThrownBy(() -> {
@@ -79,7 +77,7 @@ class ReferencePriceDataJpaTest {
         assertThat(this.ingredientRepository.count()).isEqualTo(1);
         assertThat(this.referencePriceRepository.count()).isEqualTo(1);
 
-        this.ingredientRepository.delete(this.ingredientFromRepository);
+        this.ingredientRepository.delete(this.testIngredient);
 
         assertThat(this.ingredientRepository.count()).isEqualTo(0);
         assertThat(this.referencePriceRepository.count()).isEqualTo(0);

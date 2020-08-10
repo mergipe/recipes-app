@@ -5,7 +5,7 @@ import com.mergipe.recipesapp.measure.ScalarQuantity;
 
 import java.math.BigDecimal;
 
-class ExampleReferencePrice {
+final class TestReferencePriceFactory {
 
     private static final String brand = "Marca";
     private static final String description = "Descrição";
@@ -14,13 +14,16 @@ class ExampleReferencePrice {
     );
     private static final BigDecimal price = new BigDecimal("5.0");
 
+    private TestReferencePriceFactory() {
+    }
+
     static ReferencePrice ofIngredient(Ingredient ingredient) {
         return new ReferencePrice(
                 ingredient,
-                ExampleReferencePrice.brand,
-                ExampleReferencePrice.description,
-                ExampleReferencePrice.amount,
-                ExampleReferencePrice.price
+                TestReferencePriceFactory.brand,
+                TestReferencePriceFactory.description,
+                TestReferencePriceFactory.amount,
+                TestReferencePriceFactory.price
         );
     }
 }
