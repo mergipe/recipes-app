@@ -21,7 +21,7 @@ class IngredientDataJpaTest {
 
     @BeforeEach
     void setUpTestEnvironment() {
-        this.testIngredient = IngredientDataJpaTestSetup
+        this.testIngredient = IngredientDataJpaTestHelper
                 .saveExampleIngredientWithoutReferencePrices(this.repository);
     }
 

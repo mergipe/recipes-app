@@ -22,7 +22,7 @@ class ReferencePriceDataJpaTest {
 
     @BeforeEach
     void setUpTestEnvironment() {
-        this.testIngredient = IngredientDataJpaTestSetup
+        this.testIngredient = IngredientDataJpaTestHelper
                 .saveExampleIngredientWithOneReferencePrice(this.ingredientRepository);
     }
 
