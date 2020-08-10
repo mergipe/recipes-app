@@ -1,8 +1,8 @@
 package com.mergipe.recipesapp.ingredient;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IngredientRepository extends CrudRepository<Ingredient, Long> {
+public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
     Ingredient findByName(String name);
 }

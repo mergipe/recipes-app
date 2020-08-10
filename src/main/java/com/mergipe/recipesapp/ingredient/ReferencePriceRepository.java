@@ -1,6 +1,6 @@
 package com.mergipe.recipesapp.ingredient;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ReferencePriceRepository extends CrudRepository<ReferencePrice, Long> {
+public interface ReferencePriceRepository extends JpaRepository<ReferencePrice, Long> {
 }
