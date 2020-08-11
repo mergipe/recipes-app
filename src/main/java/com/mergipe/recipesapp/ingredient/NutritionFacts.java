@@ -3,6 +3,7 @@ package com.mergipe.recipesapp.ingredient;
 import com.mergipe.recipesapp.measure.ScalarQuantity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Embeddable
 public class NutritionFacts {
@@ -154,5 +155,28 @@ public class NutritionFacts {
 
     public void setSodium(double sodium) {
         this.sodium = sodium;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NutritionFacts that = (NutritionFacts) o;
+        return Double.compare(that.calories, calories) == 0 &&
+                Double.compare(that.totalCarbohydrate, totalCarbohydrate) == 0 &&
+                Double.compare(that.protein, protein) == 0 &&
+                Double.compare(that.totalFat, totalFat) == 0 &&
+                Double.compare(that.saturatedFat, saturatedFat) == 0 &&
+                Double.compare(that.transFat, transFat) == 0 &&
+                Double.compare(that.dietaryFiber, dietaryFiber) == 0 &&
+                Double.compare(that.sodium, sodium) == 0 &&
+                Objects.equals(primaryServingSize, that.primaryServingSize) &&
+                Objects.equals(secondaryServingSize, that.secondaryServingSize);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(primaryServingSize, secondaryServingSize, calories, totalCarbohydrate,
+                protein, totalFat, saturatedFat, transFat, dietaryFiber, sodium);
     }
 }

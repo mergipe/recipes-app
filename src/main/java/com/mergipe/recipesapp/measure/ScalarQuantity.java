@@ -2,6 +2,7 @@ package com.mergipe.recipesapp.measure;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class ScalarQuantity {
@@ -34,5 +35,19 @@ public class ScalarQuantity {
 
     public void setMeasurementUnit(MeasurementUnit measurementUnit) {
         this.measurementUnit = measurementUnit;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ScalarQuantity that = (ScalarQuantity) o;
+        return Double.compare(that.magnitude, magnitude) == 0 &&
+                measurementUnit == that.measurementUnit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(magnitude, measurementUnit);
     }
 }
