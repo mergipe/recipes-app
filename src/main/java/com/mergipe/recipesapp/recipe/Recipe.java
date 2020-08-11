@@ -18,15 +18,14 @@ public class Recipe {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "numberOfPortions", column = @Column(nullable = true))
+            @AttributeOverride(
+                    name = "numberOfPortions",
+                    column = @Column(nullable = true)
+            )
     })
     private Yield yield;
 
-    @OneToMany(
-            mappedBy = "recipe",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeItem> recipeItemList = new ArrayList<>();
 
     @Transient

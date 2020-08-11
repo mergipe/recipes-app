@@ -16,11 +16,7 @@ public class Ingredient {
 
     private String brand;
 
-    @OneToMany(
-            mappedBy = "ingredient",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReferencePrice> referencePrices = new ArrayList<>();
 
     @Embedded
