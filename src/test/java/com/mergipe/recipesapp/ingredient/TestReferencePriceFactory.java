@@ -7,8 +7,7 @@ import java.math.BigDecimal;
 
 final class TestReferencePriceFactory {
 
-    private static final String brand = "Marca";
-    private static final String description = "Descrição";
+    private static final String description = "reference price description";
     private static final ScalarQuantity amount = new ScalarQuantity(
             500, MeasurementUnit.GRAM
     );
@@ -20,7 +19,6 @@ final class TestReferencePriceFactory {
     static ReferencePrice ofIngredient(Ingredient ingredient) {
         return new ReferencePrice(
                 ingredient,
-                TestReferencePriceFactory.brand,
                 TestReferencePriceFactory.description,
                 TestReferencePriceFactory.amount,
                 TestReferencePriceFactory.price

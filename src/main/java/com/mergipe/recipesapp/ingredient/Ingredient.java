@@ -14,6 +14,8 @@ public class Ingredient {
     @Column(nullable = false)
     private String name;
 
+    private String brand;
+
     @OneToMany(
             mappedBy = "ingredient",
             cascade = CascadeType.ALL,
@@ -27,8 +29,9 @@ public class Ingredient {
     public Ingredient() {
     }
 
-    public Ingredient(String name, NutritionFacts nutritionFacts) {
+    public Ingredient(String name, String brand, NutritionFacts nutritionFacts) {
         this.name = name;
+        this.brand = brand;
         this.nutritionFacts = nutritionFacts;
     }
 
@@ -46,6 +49,14 @@ public class Ingredient {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public List<ReferencePrice> getReferencePrices() {

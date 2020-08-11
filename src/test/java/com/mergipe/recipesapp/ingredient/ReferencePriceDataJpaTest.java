@@ -40,8 +40,6 @@ class ReferencePriceDataJpaTest {
         assertThat(referencePriceFromIngredient.getIngredient())
                 .isEqualToComparingFieldByField(referencePriceFromRepository.getIngredient())
                 .isEqualToComparingFieldByField(this.testIngredient);
-        assertThat(referencePriceFromIngredient.getBrand())
-                .isEqualTo(referencePriceFromRepository.getBrand());
         assertThat(referencePriceFromIngredient.getDescription())
                 .isEqualTo(referencePriceFromRepository.getDescription());
         assertThat(referencePriceFromIngredient.getAmount())

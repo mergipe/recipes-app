@@ -28,7 +28,9 @@ class IngredientDataJpaTest {
     @Test
     void checkThatCreatingIngredientWithNullNutritionFactsThrowsException() {
         assertThatThrownBy(() -> {
-            this.repository.saveAndFlush(new Ingredient("nome", null));
+            this.repository.saveAndFlush(new Ingredient(
+                    "name", "brand", null)
+            );
         }).isInstanceOf(DataIntegrityViolationException.class);
     }
 
@@ -39,6 +41,8 @@ class IngredientDataJpaTest {
         assertThat(this.repository.count()).isEqualTo(1);
         assertThat(this.testIngredient.getName())
                 .isEqualTo(referenceIngredient.getName());
+        assertThat(this.testIngredient.getBrand())
+                .isEqualTo(referenceIngredient.getBrand());
         assertThat(this.testIngredient.getNutritionFacts())
                 .isEqualToComparingFieldByField(referenceIngredient.getNutritionFacts());
     }
@@ -46,38 +50,38 @@ class IngredientDataJpaTest {
     @Test
     void testUpdateNutritionFactsAttributes() {
         NutritionFacts nutritionFacts = this.testIngredient.getNutritionFacts();
-        nutritionFacts.setCalories(1);
-        nutritionFacts.setTotalCarbohydrate(2);
-        nutritionFacts.setProtein(3);
-        nutritionFacts.setTotalFat(4);
-        nutritionFacts.setSaturatedFat(5);
-        nutritionFacts.setTransFat(6);
-        nutritionFacts.setDietaryFiber(7);
-        nutritionFacts.setSodium(8);
+        nutritionFacts.setCalories(10);
+        nutritionFacts.setTotalCarbohydrate(20);
+        nutritionFacts.setProtein(30);
+        nutritionFacts.setTotalFat(40);
+        nutritionFacts.setSaturatedFat(50);
+        nutritionFacts.setTransFat(60);
+        nutritionFacts.setDietaryFiber(70);
+        nutritionFacts.setSodium(80);
         nutritionFacts.setPrimaryServingSize(new ScalarQuantity(
-                500, MeasurementUnit.GRAM
+                1000, MeasurementUnit.MILLILITER
         ));
         nutritionFacts.setSecondaryServingSize(new ScalarQuantity(
-                2, MeasurementUnit.CUP
+                10, MeasurementUnit.UNIT
         ));
         this.testIngredient = this.repository.saveAndFlush(this.testIngredient);
         nutritionFacts = this.testIngredient.getNutritionFacts();
 
-        assertThat(nutritionFacts.getCalories()).isEqualTo(1);
-        assertThat(nutritionFacts.getTotalCarbohydrate()).isEqualTo(2);
-        assertThat(nutritionFacts.getProtein()).isEqualTo(3);
-        assertThat(nutritionFacts.getTotalFat()).isEqualTo(4);
-        assertThat(nutritionFacts.getSaturatedFat()).isEqualTo(5);
-        assertThat(nutritionFacts.getTransFat()).isEqualTo(6);
-        assertThat(nutritionFacts.getDietaryFiber()).isEqualTo(7);
-        assertThat(nutritionFacts.getSodium()).isEqualTo(8);
+        assertThat(nutritionFacts.getCalories()).isEqualTo(10);
+        assertThat(nutritionFacts.getTotalCarbohydrate()).isEqualTo(20);
+        assertThat(nutritionFacts.getProtein()).isEqualTo(30);
+        assertThat(nutritionFacts.getTotalFat()).isEqualTo(40);
+        assertThat(nutritionFacts.getSaturatedFat()).isEqualTo(50);
+        assertThat(nutritionFacts.getTransFat()).isEqualTo(60);
+        assertThat(nutritionFacts.getDietaryFiber()).isEqualTo(70);
+        assertThat(nutritionFacts.getSodium()).isEqualTo(80);
         assertThat(nutritionFacts.getPrimaryServingSize()).matches(nf ->
-                nf.getMagnitude() == 500 &&
-                nf.getMeasurementUnit() == MeasurementUnit.GRAM
+                nf.getMagnitude() == 1000 &&
+                        nf.getMeasurementUnit() == MeasurementUnit.MILLILITER
         );
         assertThat(nutritionFacts.getSecondaryServingSize()).matches(nf ->
-                nf.getMagnitude() == 2 &&
-                nf.getMeasurementUnit() == MeasurementUnit.CUP
+                nf.getMagnitude() == 10 &&
+                        nf.getMeasurementUnit() == MeasurementUnit.UNIT
         );
     }
 

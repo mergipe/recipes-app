@@ -16,7 +16,6 @@ public class ReferencePrice {
     @JoinColumn(nullable = false)
     private Ingredient ingredient;
 
-    private String brand;
     private String description;
 
     @Embedded
@@ -38,11 +37,9 @@ public class ReferencePrice {
     public ReferencePrice() {
     }
 
-    public ReferencePrice(Ingredient ingredient, String brand,
-                          String description, ScalarQuantity amount,
+    public ReferencePrice(Ingredient ingredient, String description, ScalarQuantity amount,
                           BigDecimal price) {
         this.ingredient = ingredient;
-        this.brand = brand;
         this.description = description;
         this.amount = amount;
         this.price = price;
@@ -62,14 +59,6 @@ public class ReferencePrice {
 
     public void setIngredient(Ingredient ingredient) {
         this.ingredient = ingredient;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
     }
 
     public String getDescription() {

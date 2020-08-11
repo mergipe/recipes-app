@@ -57,6 +57,25 @@ public class NutritionFacts {
     @Column(nullable = false, columnDefinition = "double default 0")
     private double sodium;
 
+    public NutritionFacts() {
+    }
+
+    public NutritionFacts(ScalarQuantity primaryServingSize, ScalarQuantity secondaryServingSize,
+                          double calories, double totalCarbohydrate, double protein,
+                          double totalFat, double saturatedFat, double transFat,
+                          double dietaryFiber, double sodium) {
+        this.primaryServingSize = primaryServingSize;
+        this.secondaryServingSize = secondaryServingSize;
+        this.calories = calories;
+        this.totalCarbohydrate = totalCarbohydrate;
+        this.protein = protein;
+        this.totalFat = totalFat;
+        this.saturatedFat = saturatedFat;
+        this.transFat = transFat;
+        this.dietaryFiber = dietaryFiber;
+        this.sodium = sodium;
+    }
+
     public ScalarQuantity getPrimaryServingSize() {
         return primaryServingSize;
     }
