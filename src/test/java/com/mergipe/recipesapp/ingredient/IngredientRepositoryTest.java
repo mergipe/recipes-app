@@ -17,80 +17,68 @@ class IngredientRepositoryTest {
     @Autowired
     private IngredientRepository repository;
 
-    private Ingredient testIngredient;
+    private Ingredient savedIngredient;
 
     @BeforeEach
     void setUpTestEnvironment() {
-        this.testIngredient = IngredientRepositoryTestHelper
+        this.savedIngredient = IngredientRepositoryTestHelper
                 .saveExampleIngredientWithoutReferencePrices(this.repository);
     }
 
     @Test
-    void checkThatCreatingIngredientWithNullNutritionFactsThrowsException() {
+    void creatingIngredientWithNullNutritionFactsShouldThrowDataIntegrityViolationException() {
         assertThatThrownBy(() -> {
             this.repository.saveAndFlush(new Ingredient(
-                    "name", "brand", null)
+                    "name",
+                    "brand",
+                    null)
             );
         }).isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
-    void testCreateBasicIngredient() {
+    void creatingIngredientWithoutReferencePricesShouldCorrectlyPersistItsAttributes() {
         Ingredient referenceIngredient = TestIngredientFactory.withoutReferencePrices();
 
         assertThat(this.repository.count()).isEqualTo(1);
-        assertThat(this.testIngredient.getName())
+        assertThat(this.savedIngredient.getName())
                 .isEqualTo(referenceIngredient.getName());
-        assertThat(this.testIngredient.getBrand())
+        assertThat(this.savedIngredient.getBrand())
                 .isEqualTo(referenceIngredient.getBrand());
-        assertThat(this.testIngredient.getNutritionFacts())
+        assertThat(this.savedIngredient.getNutritionFacts())
                 .isEqualToComparingFieldByField(referenceIngredient.getNutritionFacts());
     }
 
     @Test
-    void testUpdateNutritionFactsAttributes() {
-        NutritionFacts nutritionFacts = this.testIngredient.getNutritionFacts();
-        nutritionFacts.setCalories(10);
-        nutritionFacts.setTotalCarbohydrate(20);
-        nutritionFacts.setProtein(30);
-        nutritionFacts.setTotalFat(40);
-        nutritionFacts.setSaturatedFat(50);
-        nutritionFacts.setTransFat(60);
-        nutritionFacts.setDietaryFiber(70);
-        nutritionFacts.setSodium(80);
-        nutritionFacts.setPrimaryServingSize(new ScalarQuantity(
+    void updatingIngredientNutritionFactsShouldCorrectlyPersistItsAttributes() {
+        NutritionFacts savedNutritionFacts = this.savedIngredient.getNutritionFacts();
+        savedNutritionFacts.setCalories(10);
+        savedNutritionFacts.setTotalCarbohydrate(20);
+        savedNutritionFacts.setProtein(30);
+        savedNutritionFacts.setTotalFat(40);
+        savedNutritionFacts.setSaturatedFat(50);
+        savedNutritionFacts.setTransFat(60);
+        savedNutritionFacts.setDietaryFiber(70);
+        savedNutritionFacts.setSodium(80);
+        savedNutritionFacts.setPrimaryServingSize(new ScalarQuantity(
                 1000, MeasurementUnit.MILLILITER
         ));
-        nutritionFacts.setSecondaryServingSize(new ScalarQuantity(
+        savedNutritionFacts.setSecondaryServingSize(new ScalarQuantity(
                 10, MeasurementUnit.UNIT
         ));
-        this.testIngredient = this.repository.saveAndFlush(this.testIngredient);
-        nutritionFacts = this.testIngredient.getNutritionFacts();
 
-        assertThat(nutritionFacts.getCalories()).isEqualTo(10);
-        assertThat(nutritionFacts.getTotalCarbohydrate()).isEqualTo(20);
-        assertThat(nutritionFacts.getProtein()).isEqualTo(30);
-        assertThat(nutritionFacts.getTotalFat()).isEqualTo(40);
-        assertThat(nutritionFacts.getSaturatedFat()).isEqualTo(50);
-        assertThat(nutritionFacts.getTransFat()).isEqualTo(60);
-        assertThat(nutritionFacts.getDietaryFiber()).isEqualTo(70);
-        assertThat(nutritionFacts.getSodium()).isEqualTo(80);
-        assertThat(nutritionFacts.getPrimaryServingSize()).matches(nf ->
-                nf.getMagnitude() == 1000 &&
-                        nf.getMeasurementUnit() == MeasurementUnit.MILLILITER
-        );
-        assertThat(nutritionFacts.getSecondaryServingSize()).matches(nf ->
-                nf.getMagnitude() == 10 &&
-                        nf.getMeasurementUnit() == MeasurementUnit.UNIT
-        );
+        Ingredient updatedIngredient = this.repository.saveAndFlush(this.savedIngredient);
+        NutritionFacts updatedNutritionFacts = updatedIngredient.getNutritionFacts();
+
+        assertThat(updatedNutritionFacts).isEqualToComparingFieldByField(savedNutritionFacts);
     }
 
     @Test
-    void checkThatSettingNutritionFactsToNullThrowsException() {
-        this.testIngredient.setNutritionFacts(null);
+    void settingNutritionFactsToNullShouldThrowDataIntegrityViolationException() {
+        this.savedIngredient.setNutritionFacts(null);
 
         assertThatThrownBy(() -> {
-            this.repository.saveAndFlush(this.testIngredient);
+            this.repository.saveAndFlush(this.savedIngredient);
         }).isInstanceOf(DataIntegrityViolationException.class);
     }
 }

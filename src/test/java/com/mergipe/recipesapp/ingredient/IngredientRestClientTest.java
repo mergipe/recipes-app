@@ -30,7 +30,7 @@ class IngredientRestClientTest {
     @Autowired
     private IngredientRepository repository;
 
-    private Ingredient testIngredient;
+    private Ingredient savedIngredient;
     private TestRestTemplateWrapper<Ingredient> templateWrapper;
 
     @BeforeAll
@@ -40,50 +40,53 @@ class IngredientRestClientTest {
                 template,
                 "ingredients"
         );
-        this.testIngredient = IngredientRepositoryTestHelper
+        this.savedIngredient = IngredientRepositoryTestHelper
                 .saveExampleIngredientWithoutReferencePrices(this.repository);
     }
 
     @Test
-    void testGetAllIngredients() {
+    void gettingAllIngredientsShouldReturnAnIngredientListWithoutErrors() {
         ResponseEntity<PagedModel<Ingredient>> responseEntity = this.templateWrapper.getAll();
 
         assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
 
-        List<Ingredient> ingredients = new ArrayList<>(responseEntity.getBody().getContent());
+        List<Ingredient> ingredientsFromResponse =
+                new ArrayList<>(responseEntity.getBody().getContent());
         List<Ingredient> ingredientsFromRepository = this.repository.findAll();
 
-        assertThat(ingredients).isNotNull().isNotEmpty();
-        assertThat(ingredients.size())
+        assertThat(ingredientsFromResponse).isNotNull().isNotEmpty();
+        assertThat(ingredientsFromResponse.size())
                 .isEqualTo(ingredientsFromRepository.size())
                 .isEqualTo(1);
 
-        Ingredient ingredient = ingredients.get(0);
+        Ingredient ingredientFromResponse = ingredientsFromResponse.get(0);
         Ingredient ingredientFromRepository = ingredientsFromRepository.get(0);
 
-        assertThat(ingredient.getName()).isEqualTo(ingredientFromRepository.getName());
-        assertThat(ingredient.getBrand()).isEqualTo(ingredientFromRepository.getBrand());
-        assertThat(ingredient.getNutritionFacts())
+        assertThat(ingredientFromResponse.getName())
+                .isEqualTo(ingredientFromRepository.getName());
+        assertThat(ingredientFromResponse.getBrand())
+                .isEqualTo(ingredientFromRepository.getBrand());
+        assertThat(ingredientFromResponse.getNutritionFacts())
                 .isEqualToComparingFieldByField(ingredientFromRepository.getNutritionFacts());
     }
 
     @Test
-    void testGetOneIngredient() {
+    void gettingAnIngredientByIdShouldReturnTheCorrectIngredientWithoutErrors() {
         ResponseEntity<EntityModel<Ingredient>> responseEntity = this.templateWrapper
-                .getOne(this.testIngredient.getId());
+                .getOne(this.savedIngredient.getId());
 
         assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
 
         Ingredient ingredient = responseEntity.getBody().getContent();
         Ingredient ingredientFromRepository = this.repository
-                .findById(this.testIngredient.getId())
+                .findById(this.savedIngredient.getId())
                 .get();
 
         assertThat(ingredient.getName())
-                .isEqualTo(this.testIngredient.getName())
+                .isEqualTo(this.savedIngredient.getName())
                 .isEqualTo(ingredientFromRepository.getName());
         assertThat(ingredient.getNutritionFacts())
-                .isEqualToComparingFieldByField(this.testIngredient.getNutritionFacts())
+                .isEqualToComparingFieldByField(this.savedIngredient.getNutritionFacts())
                 .isEqualTo(ingredientFromRepository.getNutritionFacts());
     }
 }
