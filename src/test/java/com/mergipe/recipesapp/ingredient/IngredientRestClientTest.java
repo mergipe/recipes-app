@@ -40,7 +40,7 @@ class IngredientRestClientTest {
                 template,
                 "ingredients"
         );
-        this.testIngredient = IngredientDataJpaTestHelper
+        this.testIngredient = IngredientRepositoryTestHelper
                 .saveExampleIngredientWithoutReferencePrices(this.repository);
     }
 

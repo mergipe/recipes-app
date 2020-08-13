@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
-class ReferencePriceDataJpaTest {
+class ReferencePriceRepositoryTest {
 
     @Autowired
     private IngredientRepository ingredientRepository;
@@ -22,7 +22,7 @@ class ReferencePriceDataJpaTest {
 
     @BeforeEach
     void setUpTestEnvironment() {
-        this.testIngredient = IngredientDataJpaTestHelper
+        this.testIngredient = IngredientRepositoryTestHelper
                 .saveExampleIngredientWithOneReferencePrice(this.ingredientRepository);
     }
 

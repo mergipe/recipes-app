@@ -1,8 +1,8 @@
 package com.mergipe.recipesapp.ingredient;
 
-final class IngredientDataJpaTestHelper {
+final class IngredientRepositoryTestHelper {
 
-    private IngredientDataJpaTestHelper() {
+    private IngredientRepositoryTestHelper() {
     }
 
     static Ingredient saveExampleIngredientWithoutReferencePrices(IngredientRepository repository) {
