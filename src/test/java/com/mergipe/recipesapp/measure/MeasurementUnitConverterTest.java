@@ -6,8 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MeasurementUnitConverterTest {
 
-    private final MeasurementUnitConverter converter =
-            new MeasurementUnitConverter();
+    private final MeasurementUnitConverter converter = new MeasurementUnitConverter();
 
     @Test
     void testConvertToDatabaseColumn() {
