@@ -80,4 +80,15 @@ public class Ingredient {
         this.referencePrices.remove(referencePrice);
         referencePrice.setIngredient(null);
     }
+
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", brand='" + brand + '\'' +
+                ", referencePrices=" + referencePrices +
+                ", nutritionFacts=" + nutritionFacts +
+                '}';
+    }
 }

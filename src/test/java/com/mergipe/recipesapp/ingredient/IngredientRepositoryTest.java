@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import static com.mergipe.recipesapp.ingredient.IngredientAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -41,12 +42,10 @@ class IngredientRepositoryTest {
         Ingredient referenceIngredient = TestIngredientFactory.withoutReferencePrices();
 
         assertThat(this.repository.count()).isEqualTo(1);
-        assertThat(this.savedIngredient.getName())
-                .isEqualTo(referenceIngredient.getName());
-        assertThat(this.savedIngredient.getBrand())
-                .isEqualTo(referenceIngredient.getBrand());
-        assertThat(this.savedIngredient.getNutritionFacts())
-                .isEqualToComparingFieldByField(referenceIngredient.getNutritionFacts());
+        assertThat(this.savedIngredient)
+                .hasName(referenceIngredient.getName())
+                .hasBrand(referenceIngredient.getBrand())
+                .hasNutritionFacts(referenceIngredient.getNutritionFacts());
     }
 
     @Test
@@ -70,7 +69,7 @@ class IngredientRepositoryTest {
         Ingredient updatedIngredient = this.repository.saveAndFlush(this.savedIngredient);
         NutritionFacts updatedNutritionFacts = updatedIngredient.getNutritionFacts();
 
-        assertThat(updatedNutritionFacts).isEqualToComparingFieldByField(savedNutritionFacts);
+        assertThat(updatedNutritionFacts).isEqualTo(savedNutritionFacts);
     }
 
     @Test

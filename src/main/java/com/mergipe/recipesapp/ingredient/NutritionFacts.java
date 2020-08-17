@@ -179,4 +179,20 @@ public class NutritionFacts {
         return Objects.hash(primaryServingSize, secondaryServingSize, calories, totalCarbohydrate,
                 protein, totalFat, saturatedFat, transFat, dietaryFiber, sodium);
     }
+
+    @Override
+    public String toString() {
+        return "NutritionFacts{" +
+                "primaryServingSize=" + primaryServingSize +
+                ", secondaryServingSize=" + secondaryServingSize +
+                ", calories=" + calories +
+                ", totalCarbohydrate=" + totalCarbohydrate +
+                ", protein=" + protein +
+                ", totalFat=" + totalFat +
+                ", saturatedFat=" + saturatedFat +
+                ", transFat=" + transFat +
+                ", dietaryFiber=" + dietaryFiber +
+                ", sodium=" + sodium +
+                '}';
+    }
 }

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import static com.mergipe.recipesapp.ingredient.IngredientAssert.assertThat;
+import static com.mergipe.recipesapp.ingredient.ReferencePriceAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -37,15 +39,13 @@ class ReferencePriceRepositoryTest {
                 .findById(referencePriceFromSavedIngredient.getId())
                 .get();
 
-        assertThat(referencePriceFromSavedIngredient.getIngredient())
-                .isEqualToComparingFieldByField(referencePriceFromRepository.getIngredient())
-                .isEqualToComparingFieldByField(this.savedIngredient);
-        assertThat(referencePriceFromSavedIngredient.getDescription())
-                .isEqualTo(referencePriceFromRepository.getDescription());
-        assertThat(referencePriceFromSavedIngredient.getAmount())
-                .isEqualToComparingFieldByField(referencePriceFromRepository.getAmount());
-        assertThat(referencePriceFromSavedIngredient.getPrice())
-                .isEqualByComparingTo(referencePriceFromRepository.getPrice());
+        assertThat(referencePriceFromRepository)
+                .hasIngredient(this.savedIngredient);
+        assertThat(referencePriceFromSavedIngredient)
+                .hasIngredient(referencePriceFromRepository.getIngredient())
+                .hasDescription(referencePriceFromRepository.getDescription())
+                .hasAmount(referencePriceFromRepository.getAmount())
+                .hasPrice(referencePriceFromRepository.getPrice());
     }
 
     @Test
@@ -54,9 +54,8 @@ class ReferencePriceRepositoryTest {
         this.savedIngredient.removeReferencePrice(referencePrice);
         this.savedIngredient = this.ingredientRepository.saveAndFlush(this.savedIngredient);
 
-        assertThat(this.savedIngredient.getReferencePrices().size())
-                .isEqualTo(0)
-                .isEqualTo(this.referencePriceRepository.count());
+        assertThat(this.savedIngredient).hasNoReferencePrice();
+        assertThat(this.referencePriceRepository.count()).isEqualTo(0);
     }
 
     @Test
