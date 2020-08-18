@@ -1,12 +1,17 @@
 package com.mergipe.recipesapp;
 
+import com.mergipe.recipesapp.ingredient.Ingredient;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.ResolvableType;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class TestRestTemplateWrapper<T> {
 
@@ -32,7 +37,7 @@ public class TestRestTemplateWrapper<T> {
                 this.resourcePath,
                 HttpMethod.GET,
                 null,
-                pagedModelTypeReference
+                this.pagedModelTypeReference
         );
     }
 
@@ -41,7 +46,36 @@ public class TestRestTemplateWrapper<T> {
                 this.resourcePath + "/" + id,
                 HttpMethod.GET,
                 null,
-                entityModelTypeReference
+                this.entityModelTypeReference
+        );
+    }
+
+    public ResponseEntity<EntityModel<T>> post(Ingredient ingredient) throws URISyntaxException {
+        return this.template.exchange(
+                RequestEntity
+                        .post(new URI(this.resourcePath))
+                        .accept(RestClientTestConfiguration.MEDIA_TYPE)
+                        .body(ingredient),
+                this.entityModelTypeReference
+        );
+    }
+
+    public ResponseEntity<EntityModel<T>> put(Ingredient ingredient) throws URISyntaxException {
+        return this.template.exchange(
+                RequestEntity
+                        .put(new URI(this.resourcePath + "/" + ingredient.getId()))
+                        .accept(RestClientTestConfiguration.MEDIA_TYPE)
+                        .body(ingredient),
+                this.entityModelTypeReference
+        );
+    }
+
+    public ResponseEntity<EntityModel<T>> delete(Long id) {
+        return this.template.exchange(
+                this.resourcePath + "/" + id,
+                HttpMethod.DELETE,
+                null,
+                this.entityModelTypeReference
         );
     }
 }

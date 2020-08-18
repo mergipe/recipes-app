@@ -12,12 +12,19 @@ import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
+import java.util.List;
+
 @TestConfiguration(proxyBeanMethods = false)
 @Lazy
 public class RestClientTestConfiguration {
 
-    @LocalServerPort
-    private int port;
+    public static final MediaType MEDIA_TYPE = MediaType.parseMediaType("application/hal+json");
+
+    private final String rootUri;
+
+    public RestClientTestConfiguration(@LocalServerPort int port) {
+        this.rootUri = "http://localhost:" + port + "/api";
+    }
 
     @Bean
     public TestRestTemplate testRestTemplate() {
@@ -27,13 +34,12 @@ public class RestClientTestConfiguration {
 
         MappingJackson2HttpMessageConverter messageConverter =
                 new MappingJackson2HttpMessageConverter();
-        messageConverter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
+        messageConverter.setSupportedMediaTypes(List.of(MEDIA_TYPE));
         messageConverter.setObjectMapper(mapper);
 
-        return new TestRestTemplate(
-                new RestTemplateBuilder()
-                        .rootUri("http://localhost:" + this.port + "/api")
-                        .additionalMessageConverters(messageConverter)
+        return new TestRestTemplate(new RestTemplateBuilder()
+                .rootUri(this.rootUri)
+                .additionalMessageConverters(messageConverter)
         );
     }
 }
