@@ -54,7 +54,7 @@ class IngredientRestClientTest {
     }
 
     @Test
-    void gettingAllIngredientsShouldReturnAnIngredientListWithoutErrors() {
+    void gettingAllIngredientsShouldCorrectlyReturnAListWithAllIngredients() {
         ResponseEntity<PagedModel<Ingredient>> responseEntity = this.templateWrapper.getAll();
 
         assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
@@ -108,7 +108,7 @@ class IngredientRestClientTest {
     }
 
     @Test
-    void puttingAnIngredientShouldCorrectlyPersistItsAttributes() throws URISyntaxException {
+    void puttingAnIngredientShouldCorrectlyUpdateItsAttributes() throws URISyntaxException {
         Ingredient ingredient = TestIngredientFactory.withoutReferencePrices();
         ingredient.setId(this.savedIngredient.getId());
         ingredient.setName("a");
