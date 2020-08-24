@@ -139,23 +139,21 @@ class IngredientRestClientTest {
 
             @Test
             void shouldCorrectlyUpdateItsAttributes() throws URISyntaxException {
-                Ingredient ingredient = TestIngredientFactory.withoutReferencePrices();
-                ingredient.setId(savedIngredient.getId());
-                ingredient.setName("a");
-                ingredient.setBrand("b");
-                ingredient.getNutritionFacts().setCalories(1000);
+                savedIngredient.setName("a");
+                savedIngredient.setBrand("b");
+                savedIngredient.getNutritionFacts().setCalories(1000);
 
                 ResponseEntity<EntityModel<Ingredient>> responseEntity = templateWrapper
-                        .put(ingredient);
+                        .put(savedIngredient);
 
                 assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
 
                 Ingredient updatedIngredient = responseEntity.getBody().getContent();
 
                 assertThat(updatedIngredient)
-                        .hasName(ingredient.getName())
-                        .hasBrand(ingredient.getBrand())
-                        .hasNutritionFacts(ingredient.getNutritionFacts());
+                        .hasName(savedIngredient.getName())
+                        .hasBrand(savedIngredient.getBrand())
+                        .hasNutritionFacts(savedIngredient.getNutritionFacts());
             }
         }
 
