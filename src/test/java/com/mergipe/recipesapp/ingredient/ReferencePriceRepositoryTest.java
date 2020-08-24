@@ -1,10 +1,13 @@
 package com.mergipe.recipesapp.ingredient;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+
+import java.util.List;
 
 import static com.mergipe.recipesapp.ingredient.IngredientAssert.assertThat;
 import static com.mergipe.recipesapp.ingredient.ReferencePriceAssert.assertThat;
@@ -20,62 +23,140 @@ class ReferencePriceRepositoryTest {
     @Autowired
     private ReferencePriceRepository referencePriceRepository;
 
-    private Ingredient savedIngredient;
+    private Ingredient testIngredient;
+    private ReferencePrice testReferencePrice;
 
     @BeforeEach
-    void setUpTestEnvironment() {
-        this.savedIngredient = IngredientRepositoryTestHelper
-                .saveExampleIngredientWithOneReferencePrice(this.ingredientRepository);
+    void createTestObjects() {
+        this.testIngredient = TestIngredientFactory.withoutReferencePrices();
+        this.testReferencePrice = TestReferencePriceFactory.withoutIngredient();
     }
 
-    @Test
-    void addingReferencePriceToIngredientShouldCorrectlyPersistItsAttributes() {
-        assertThat(this.referencePriceRepository.count()).isEqualTo(1);
+    @Nested
+    @DataJpaTest
+    class WhenDatabaseIsEmpty {
 
-        ReferencePrice referencePriceFromSavedIngredient = this.savedIngredient
-                .getReferencePrices()
-                .get(0);
-        ReferencePrice referencePriceFromRepository = this.referencePriceRepository
-                .findById(referencePriceFromSavedIngredient.getId())
-                .get();
+        @Nested
+        @DataJpaTest
+        class Create {
 
-        assertThat(referencePriceFromRepository)
-                .hasIngredient(this.savedIngredient);
-        assertThat(referencePriceFromSavedIngredient)
-                .hasIngredient(referencePriceFromRepository.getIngredient())
-                .hasDescription(referencePriceFromRepository.getDescription())
-                .hasAmount(referencePriceFromRepository.getAmount())
-                .hasPrice(referencePriceFromRepository.getPrice());
+            @Test
+            void creatingIngredientWithOneReferencePriceShouldCorrectlyPersistItsAttributes() {
+                testIngredient.addReferencePrice(testReferencePrice);
+                Ingredient createdIngredient = ingredientRepository.saveAndFlush(testIngredient);
+                List<ReferencePrice> referencePrices = createdIngredient.getReferencePrices();
+
+                assertThat(referencePriceRepository.count()).isEqualTo(1);
+                assertThat(createdIngredient)
+                        .hasName(testIngredient.getName())
+                        .hasBrand(testIngredient.getBrand())
+                        .hasNutritionFacts(testIngredient.getNutritionFacts())
+                        .hasReferencePrices();
+                assertThat(referencePrices.size())
+                        .isEqualTo(1);
+                assertThat(referencePrices.get(0))
+                        .hasIngredient(testReferencePrice.getIngredient())
+                        .hasDescription(testReferencePrice.getDescription())
+                        .hasAmount(testReferencePrice.getAmount())
+                        .hasPrice(testReferencePrice.getPrice());
+            }
+        }
     }
 
-    @Test
-    void removingReferencePriceFromIngredientShouldAlsoDeleteTheReferencePrice() {
-        ReferencePrice referencePrice = this.savedIngredient.getReferencePrices().get(0);
-        this.savedIngredient.removeReferencePrice(referencePrice);
-        this.savedIngredient = this.ingredientRepository.saveAndFlush(this.savedIngredient);
+    @Nested
+    @DataJpaTest
+    class WhenDatabaseHasOneIngredient {
 
-        assertThat(this.savedIngredient).hasNoReferencePrice();
-        assertThat(this.referencePriceRepository.count()).isEqualTo(0);
-    }
+        private Ingredient savedIngredient;
 
-    @Test
-    void removingTheIngredientAttributeFromReferencePriceShouldThrowDataIntegrityViolationException() {
-        ReferencePrice referencePrice = this.savedIngredient.getReferencePrices().get(0);
-        referencePrice.setIngredient(null);
+        private void addReferencePriceToSavedIngredient() {
+            this.savedIngredient.addReferencePrice(testReferencePrice);
+            this.savedIngredient = ingredientRepository.saveAndFlush(savedIngredient);
+        }
 
-        assertThatThrownBy(() -> {
-            this.referencePriceRepository.saveAndFlush(referencePrice);
-        }).isInstanceOf(DataIntegrityViolationException.class);
-    }
+        @BeforeEach
+        void persistTestIngredientWithoutReferencePrice() {
+            this.savedIngredient = ingredientRepository.saveAndFlush(testIngredient);
+        }
 
-    @Test
-    void deletingIngredientShouldAlsoDeleteAllItsReferencePrices() {
-        assertThat(this.ingredientRepository.count()).isEqualTo(1);
-        assertThat(this.referencePriceRepository.count()).isEqualTo(1);
+        @Nested
+        @DataJpaTest
+        class WithoutReferencePrice {
 
-        this.ingredientRepository.delete(this.savedIngredient);
+            @Nested
+            @DataJpaTest
+            class Create {
 
-        assertThat(this.ingredientRepository.count()).isEqualTo(0);
-        assertThat(this.referencePriceRepository.count()).isEqualTo(0);
+                @Test
+                void addingReferencePriceToIngredientShouldCorrectlyPersistItsAttributes() {
+                    addReferencePriceToSavedIngredient();
+
+                    assertThat(referencePriceRepository.count()).isEqualTo(1);
+
+                    ReferencePrice referencePriceFromSavedIngredient = savedIngredient
+                            .getReferencePrices()
+                            .get(0);
+                    ReferencePrice referencePriceFromRepository = referencePriceRepository
+                            .findById(referencePriceFromSavedIngredient.getId())
+                            .get();
+
+                    assertThat(referencePriceFromRepository)
+                            .hasIngredient(referencePriceFromSavedIngredient.getIngredient())
+                            .hasDescription(referencePriceFromSavedIngredient.getDescription())
+                            .hasAmount(referencePriceFromSavedIngredient.getAmount())
+                            .hasPrice(referencePriceFromSavedIngredient.getPrice());
+                    assertThat(referencePriceFromSavedIngredient)
+                            .hasIngredient(testReferencePrice.getIngredient())
+                            .hasDescription(testReferencePrice.getDescription())
+                            .hasAmount(testReferencePrice.getAmount())
+                            .hasPrice(testReferencePrice.getPrice());
+                }
+            }
+        }
+
+        @Nested
+        @DataJpaTest
+        class WithOneReferencePrice {
+
+            @BeforeEach
+            void updateSavedIngredient() {
+                addReferencePriceToSavedIngredient();
+            }
+
+            @Nested
+            @DataJpaTest
+            class Delete {
+
+                @Test
+                void removingReferencePriceFromIngredientShouldDeleteTheReferencePriceFromDatabase() {
+                    ReferencePrice referencePrice = savedIngredient.getReferencePrices().get(0);
+                    savedIngredient.removeReferencePrice(referencePrice);
+                    savedIngredient = ingredientRepository.saveAndFlush(savedIngredient);
+
+                    IngredientAssert.assertThat(savedIngredient).hasNoReferencePrice();
+                    assertThat(referencePriceRepository.count()).isEqualTo(0);
+                }
+
+                @Test
+                void throwsDataIntegrityViolationExceptionWhenRemovingTheIngredientAttributeFromReferencePrice() {
+                    ReferencePrice referencePrice = savedIngredient.getReferencePrices().get(0);
+                    referencePrice.setIngredient(null);
+
+                    assertThatThrownBy(() -> referencePriceRepository.saveAndFlush(referencePrice))
+                            .isInstanceOf(DataIntegrityViolationException.class);
+                }
+
+                @Test
+                void deletingIngredientShouldAlsoDeleteAllItsReferencePrices() {
+                    assertThat(ingredientRepository.count()).isEqualTo(1);
+                    assertThat(referencePriceRepository.count()).isEqualTo(1);
+
+                    ingredientRepository.delete(savedIngredient);
+
+                    assertThat(ingredientRepository.count()).isEqualTo(0);
+                    assertThat(referencePriceRepository.count()).isEqualTo(0);
+                }
+            }
+        }
     }
 }

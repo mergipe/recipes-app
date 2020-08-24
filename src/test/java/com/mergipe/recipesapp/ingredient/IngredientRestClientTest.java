@@ -4,6 +4,7 @@ import com.mergipe.recipesapp.RestClientTestConfiguration;
 import com.mergipe.recipesapp.TestRestTemplateWrapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -31,8 +32,8 @@ class IngredientRestClientTest {
     @Autowired
     private IngredientRepository repository;
 
-    private Ingredient savedIngredient;
     private TestRestTemplateWrapper<Ingredient> templateWrapper;
+    private Ingredient testIngredient;
 
     IngredientRestClientTest(@Autowired TestRestTemplate template) {
         this.templateWrapper = new TestRestTemplateWrapper<>(
@@ -43,97 +44,134 @@ class IngredientRestClientTest {
     }
 
     @BeforeEach
-    void setUpTestEnvironment() {
-        this.savedIngredient = IngredientRepositoryTestHelper
-                .saveExampleIngredientWithoutReferencePrices(this.repository);
+    void createTestIngredient() {
+        this.testIngredient = TestIngredientFactory.withoutReferencePrices();
     }
 
     @AfterEach
-    void clearTestEnvironment() {
+    void cleanRepository() {
         this.repository.deleteAll();
     }
 
-    @Test
-    void gettingAllIngredientsShouldCorrectlyReturnAListWithAllIngredients() {
-        ResponseEntity<PagedModel<Ingredient>> responseEntity = this.templateWrapper.getAll();
+    @Nested
+    @SpringBootTest
+    class WhenDatabaseIsEmpty {
 
-        assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
+        @Nested
+        @SpringBootTest
+        class Post {
 
-        List<Ingredient> ingredientsFromResponse =
-                new ArrayList<>(responseEntity.getBody().getContent());
+            @Test
+            void shouldCorrectlyPersistItsAttributes() throws URISyntaxException {
+                ResponseEntity<EntityModel<Ingredient>> responseEntity = templateWrapper
+                        .post(testIngredient);
 
-        assertThat(ingredientsFromResponse)
-                .isNotNull()
-                .isNotEmpty();
-        assertThat(ingredientsFromResponse.size())
-                .isEqualTo(1);
+                assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.CREATED);
+                assertThat(repository.count()).isEqualTo(1);
 
-        Ingredient ingredientFromResponse = ingredientsFromResponse.get(0);
+                Ingredient createdIngredient = responseEntity.getBody().getContent();
 
-        assertThat(ingredientFromResponse)
-                .hasName(this.savedIngredient.getName())
-                .hasBrand(this.savedIngredient.getBrand())
-                .hasNutritionFacts(this.savedIngredient.getNutritionFacts());
+                assertThat(createdIngredient)
+                        .hasName(testIngredient.getName())
+                        .hasBrand(testIngredient.getBrand())
+                        .hasNutritionFacts(testIngredient.getNutritionFacts());
+            }
+        }
     }
 
-    @Test
-    void gettingAnIngredientByIdShouldReturnTheCorrectIngredientWithoutErrors() {
-        ResponseEntity<EntityModel<Ingredient>> responseEntity = this.templateWrapper
-                .getOne(this.savedIngredient.getId());
+    @Nested
+    @SpringBootTest
+    class WhenDatabaseHasOneIngredient {
 
-        assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
+        private Ingredient savedIngredient;
 
-        Ingredient ingredientFromResponse = responseEntity.getBody().getContent();
+        @BeforeEach
+        void persistTestIngredient() {
+            this.savedIngredient = repository.saveAndFlush(testIngredient);
+        }
 
-        assertThat(ingredientFromResponse)
-                .hasName(this.savedIngredient.getName())
-                .hasBrand(this.savedIngredient.getBrand())
-                .hasNutritionFacts(this.savedIngredient.getNutritionFacts());
-    }
+        @Nested
+        @SpringBootTest
+        class Get {
 
-    @Test
-    void postingAnIngredientShouldCorrectlyPersistItsAttributes() throws URISyntaxException {
-        Ingredient referenceIngredient = TestIngredientFactory.withoutReferencePrices();
-        ResponseEntity<EntityModel<Ingredient>> responseEntity = this.templateWrapper
-                .post(TestIngredientFactory.withoutReferencePrices());
+            @Test
+            void shouldCorrectlyReturnAllIngredients() {
+                ResponseEntity<PagedModel<Ingredient>> responseEntity = templateWrapper.getAll();
 
-        assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.CREATED);
+                assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
 
-        Ingredient createdIngredient = responseEntity.getBody().getContent();
+                List<Ingredient> ingredientsFromResponse =
+                        new ArrayList<>(responseEntity.getBody().getContent());
 
-        assertThat(createdIngredient)
-                .hasName(referenceIngredient.getName())
-                .hasBrand(referenceIngredient.getBrand())
-                .hasNutritionFacts(referenceIngredient.getNutritionFacts());
-    }
+                assertThat(ingredientsFromResponse)
+                        .isNotNull()
+                        .isNotEmpty();
+                assertThat(ingredientsFromResponse.size())
+                        .isEqualTo(1);
 
-    @Test
-    void puttingAnIngredientShouldCorrectlyUpdateItsAttributes() throws URISyntaxException {
-        Ingredient ingredient = TestIngredientFactory.withoutReferencePrices();
-        ingredient.setId(this.savedIngredient.getId());
-        ingredient.setName("a");
-        ingredient.setBrand("b");
-        ingredient.getNutritionFacts().setCalories(1000);
+                Ingredient ingredientFromResponse = ingredientsFromResponse.get(0);
 
-        ResponseEntity<EntityModel<Ingredient>> responseEntity = this.templateWrapper
-                .put(ingredient);
+                assertThat(ingredientFromResponse)
+                        .hasName(savedIngredient.getName())
+                        .hasBrand(savedIngredient.getBrand())
+                        .hasNutritionFacts(savedIngredient.getNutritionFacts());
+            }
 
-        assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
+            @Test
+            void shouldReturnTheCorrectIngredientGivenItsId() {
+                ResponseEntity<EntityModel<Ingredient>> responseEntity = templateWrapper
+                        .getOne(savedIngredient.getId());
 
-        Ingredient updatedIngredient = responseEntity.getBody().getContent();
+                assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
 
-        assertThat(updatedIngredient)
-                .hasName(ingredient.getName())
-                .hasBrand(ingredient.getBrand())
-                .hasNutritionFacts(ingredient.getNutritionFacts());
-    }
+                Ingredient ingredientFromResponse = responseEntity.getBody().getContent();
 
-    @Test
-    void deletingAnIngredientShouldRemoveItFromDatabase() {
-        ResponseEntity<EntityModel<Ingredient>> responseEntity = this.templateWrapper
-                .delete(this.savedIngredient.getId());
+                assertThat(ingredientFromResponse)
+                        .hasName(savedIngredient.getName())
+                        .hasBrand(savedIngredient.getBrand())
+                        .hasNutritionFacts(savedIngredient.getNutritionFacts());
+            }
+        }
 
-        assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.NO_CONTENT);
-        assertThat(this.repository.count()).isEqualTo(0);
+        @Nested
+        @SpringBootTest
+        class Put {
+
+            @Test
+            void shouldCorrectlyUpdateItsAttributes() throws URISyntaxException {
+                Ingredient ingredient = TestIngredientFactory.withoutReferencePrices();
+                ingredient.setId(savedIngredient.getId());
+                ingredient.setName("a");
+                ingredient.setBrand("b");
+                ingredient.getNutritionFacts().setCalories(1000);
+
+                ResponseEntity<EntityModel<Ingredient>> responseEntity = templateWrapper
+                        .put(ingredient);
+
+                assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
+
+                Ingredient updatedIngredient = responseEntity.getBody().getContent();
+
+                assertThat(updatedIngredient)
+                        .hasName(ingredient.getName())
+                        .hasBrand(ingredient.getBrand())
+                        .hasNutritionFacts(ingredient.getNutritionFacts());
+            }
+        }
+
+        @Nested
+        @SpringBootTest
+        class Delete {
+
+            @Test
+            void shouldRemoveItFromDatabase() {
+                ResponseEntity<EntityModel<Ingredient>> responseEntity = templateWrapper
+                        .delete(savedIngredient.getId());
+
+                assertThat(responseEntity.getStatusCode())
+                        .isEqualByComparingTo(HttpStatus.NO_CONTENT);
+                assertThat(repository.count()).isEqualTo(0);
+            }
+        }
     }
 }

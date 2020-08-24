@@ -5,20 +5,25 @@ import com.mergipe.recipesapp.measure.ScalarQuantity;
 
 import java.math.BigDecimal;
 
-final class TestReferencePriceFactory {
+public class TestReferencePriceFactory {
 
-    private static final String description = "reference price description";
-    private static final BigDecimal price = new BigDecimal("5.0");
+    private static final String DESCRIPTION = "description";
+    private static final BigDecimal PRICE = new BigDecimal("5.0");
+    private static final double AMOUNT_MAGNITUDE = 500;
+    private static final MeasurementUnit AMOUNT_MEASUREMENT_UNIT = MeasurementUnit.GRAM;
 
     private TestReferencePriceFactory() {
     }
 
-    static ReferencePrice ofIngredient(Ingredient ingredient) {
+    public static ReferencePrice withoutIngredient() {
         return new ReferencePrice(
-                ingredient,
-                TestReferencePriceFactory.description,
-                new ScalarQuantity(500, MeasurementUnit.GRAM),
-                TestReferencePriceFactory.price
+                null,
+                DESCRIPTION,
+                new ScalarQuantity(
+                        AMOUNT_MAGNITUDE,
+                        AMOUNT_MEASUREMENT_UNIT
+                ),
+                PRICE
         );
     }
 }

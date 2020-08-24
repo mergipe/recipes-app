@@ -46,7 +46,8 @@ public class IngredientAssert extends AbstractAssert<IngredientAssert, Ingredien
 
         Assertions.assertThat(actual.getNutritionFacts())
                 .overridingErrorMessage(
-                        "Expected ingredient's nutrition facts to be <%s> but was <%s>",
+                        "Expected ingredient's nutrition facts to be <%s> but was" +
+                                " <%s>",
                         nutritionFacts,
                         actual.getNutritionFacts()
                 )
@@ -60,11 +61,26 @@ public class IngredientAssert extends AbstractAssert<IngredientAssert, Ingredien
 
         Assertions.assertThat(actual.getReferencePrices())
                 .overridingErrorMessage(
-                        "Expected ingredient's reference prices list size to be <%s> but was <%s>",
+                        "Expected ingredient's reference prices list size to be" +
+                                " <%s> but was <%s>",
                         0,
                         actual.getReferencePrices().size()
                 )
                 .isEmpty();
+
+        return this;
+    }
+
+    public IngredientAssert hasReferencePrices() {
+        isNotNull();
+
+        Assertions.assertThat(actual.getReferencePrices())
+                .overridingErrorMessage(
+                        "Expected ingredient's reference prices list size to be" +
+                                " greater than 0 but was <%s>",
+                        actual.getReferencePrices().size()
+                )
+                .isNotEmpty();
 
         return this;
     }

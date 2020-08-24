@@ -21,7 +21,8 @@ public class ReferencePriceAssert extends AbstractAssert<ReferencePriceAssert, R
 
         Assertions.assertThat(actual.getIngredient())
                 .overridingErrorMessage(
-                        "Expected reference price's ingredient to be <%s> but was <%s>",
+                        "Expected reference price's ingredient to be <%s> but was" +
+                                " <%s>",
                         ingredient,
                         actual.getIngredient()
                 )
@@ -35,7 +36,8 @@ public class ReferencePriceAssert extends AbstractAssert<ReferencePriceAssert, R
 
         Assertions.assertThat(actual.getDescription())
                 .overridingErrorMessage(
-                        "Expected reference price's description to be <%s> but was <%s>",
+                        "Expected reference price's description to be <%s> but" +
+                                " was <%s>",
                         description,
                         actual.getDescription()
                 )
