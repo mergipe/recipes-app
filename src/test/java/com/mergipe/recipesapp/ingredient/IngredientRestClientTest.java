@@ -55,10 +55,12 @@ class IngredientRestClientTest {
 
     @Nested
     @SpringBootTest
+    @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
     class WhenDatabaseIsEmpty {
 
         @Nested
         @SpringBootTest
+        @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
         class Post {
 
             @Test
@@ -81,6 +83,7 @@ class IngredientRestClientTest {
 
     @Nested
     @SpringBootTest
+    @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
     class WhenDatabaseHasOneIngredient {
 
         private Ingredient savedIngredient;
@@ -92,6 +95,7 @@ class IngredientRestClientTest {
 
         @Nested
         @SpringBootTest
+        @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
         class Get {
 
             @Test
@@ -135,6 +139,7 @@ class IngredientRestClientTest {
 
         @Nested
         @SpringBootTest
+        @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
         class Put {
 
             @Test
@@ -159,6 +164,7 @@ class IngredientRestClientTest {
 
         @Nested
         @SpringBootTest
+        @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
         class Delete {
 
             @Test
