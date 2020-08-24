@@ -1,6 +1,5 @@
 package com.mergipe.recipesapp;
 
-import com.mergipe.recipesapp.ingredient.Ingredient;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.ResolvableType;
@@ -50,22 +49,22 @@ public class TestRestTemplateWrapper<T> {
         );
     }
 
-    public ResponseEntity<EntityModel<T>> post(Ingredient ingredient) throws URISyntaxException {
+    public ResponseEntity<EntityModel<T>> post(T object) throws URISyntaxException {
         return this.template.exchange(
                 RequestEntity
                         .post(new URI(this.resourcePath))
                         .accept(RestClientTestConfiguration.MEDIA_TYPE)
-                        .body(ingredient),
+                        .body(object),
                 this.entityModelTypeReference
         );
     }
 
-    public ResponseEntity<EntityModel<T>> put(Ingredient ingredient) throws URISyntaxException {
+    public ResponseEntity<EntityModel<T>> put(T object, Long id) throws URISyntaxException {
         return this.template.exchange(
                 RequestEntity
-                        .put(new URI(this.resourcePath + "/" + ingredient.getId()))
+                        .put(new URI(this.resourcePath + "/" + id))
                         .accept(RestClientTestConfiguration.MEDIA_TYPE)
-                        .body(ingredient),
+                        .body(object),
                 this.entityModelTypeReference
         );
     }

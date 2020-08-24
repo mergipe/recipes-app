@@ -149,7 +149,7 @@ class IngredientRestClientTest {
                 savedIngredient.getNutritionFacts().setCalories(1000);
 
                 ResponseEntity<EntityModel<Ingredient>> responseEntity = templateWrapper
-                        .put(savedIngredient);
+                        .put(savedIngredient, savedIngredient.getId());
 
                 assertThat(responseEntity.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
 
